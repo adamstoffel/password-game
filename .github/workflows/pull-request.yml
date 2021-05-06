@@ -31,6 +31,9 @@ jobs:
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./.infra
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
@@ -38,15 +41,15 @@ jobs:
       - name: Terraform fmt
         id: fmt
         continue-on-error: true
-        run: |
-          terraform fmt -check \
-            -backend-config "azure_resource_group=${{ env.AZURE_RESOURCE_GROUP }}" \
-            -backend-config "azure_tfstate_resource_group=${{ env.AZURE_TFSTATE_RESOURCE_GROUP }}" \
-            -backend-config "azure_tfstate_storage_account=${{ env.AZURE_TFSTATE_STORAGE_ACCOUNT }}"
+        run: terraform fmt -check
 
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: |
+            terraform init \
+              -backend-config "azure_resource_group=${{ env.AZURE_RESOURCE_GROUP }}" \
+              -backend-config "azure_tfstate_resource_group=${{ env.AZURE_TFSTATE_RESOURCE_GROUP }}" \
+              -backend-config "azure_tfstate_storage_account=${{ env.AZURE_TFSTATE_STORAGE_ACCOUNT }}"
 
       - name: Terraform Validate
         id: validate
