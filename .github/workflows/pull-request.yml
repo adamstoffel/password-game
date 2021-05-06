@@ -11,9 +11,9 @@ env:
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-  azure_resource_group: ${{ secrets.AZURE_RESOURCE_GROUP }}
-  azure_tfstate_resource_group: ${{ secrets.AZURE_TFSTATE_RESOURCE_GROUP }}
-  azure_tfstate_storage_account: ${{ secrets.AZURE_TFSTATE_STORAGE_ACCOUNT }}
+  AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+  AZURE_TFSTATE_RESOURCE_GROUP: ${{ secrets.AZURE_TFSTATE_RESOURCE_GROUP }}
+  AZURE_TFSTATE_STORAGE_ACCOUNT: ${{ secrets.AZURE_TFSTATE_STORAGE_ACCOUNT }}
   
 jobs:
   build-apps:
@@ -40,7 +40,9 @@ jobs:
         continue-on-error: true
         run: |
           terraform fmt -check \
-            -backend-config "azure_tfstate_storage_account=${{ env. }}"
+            -backend-config "azure_resource_group=${{ env.AZURE_RESOURCE_GROUP }}" \
+            -backend-config "azure_tfstate_resource_group=${{ env.AZURE_TFSTATE_RESOURCE_GROUP }}" \
+            -backend-config "azure_tfstate_storage_account=${{ env.AZURE_TFSTATE_STORAGE_ACCOUNT }}"
 
       - name: Terraform Init
         id: init
