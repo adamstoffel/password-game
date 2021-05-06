@@ -3,14 +3,54 @@ on:
   pull_request:
     branches:
       - main
+
+env:
+  terraform_dir: "./.infra"
+  ARM_ENVIRONMENT: public
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  azure_resource_group: ${{ secrets.AZURE_RESOURCE_GROUP }}
+  azure_tfstate_resource_group: ${{ secrets.AZURE_TFSTATE_RESOURCE_GROUP }}
+  azure_tfstate_storage_account: ${{ secrets.AZURE_TFSTATE_STORAGE_ACCOUNT }}
+  
 jobs:
   build-apps:
+    name: Build Apps
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - name: build cats-game
+      - name: Build cats-game
+        working-directory: ./cat-game
         run: |
-            cd ./cat-game
             npm install
             npm run build
+
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform fmt
+        id: fmt
+        continue-on-error: true
+        run: |
+          terraform fmt -check \
+            -backend-config "azure_tfstate_storage_account=${{ env. }}"
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+        continue-on-error: true
