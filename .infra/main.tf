@@ -1,12 +1,12 @@
 locals {
-  service_prefix  = "pwdgame"
+  service_prefix = "pwdgame"
 }
 
 terraform {
   backend "azurerm" {
-    storage_account_name  = var.azure_tfstate_storage_account
-    container_name        = "tfstate"
-    key                   = "${local.service_prefix}-state"
+    container_name       = "tfstate"
+    key                  = "${local.service_prefix}-state"
+    # Remaining parameters from -backend-config argument
   }
   required_providers {
     azurerm = {
@@ -15,19 +15,19 @@ terraform {
     }
   }
 }
- 
+
 provider "azurerm" {
   features {}
-  environment     = var.azure_environment
+  environment = var.azure_environment
   # Service principal credential from env variables
   # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret#configuring-the-service-principal-in-terraform
 }
 
 resource "random_string" "random" {
-  length            = 6
-  special           = true
-  upper             = false
-  override_special  = ""
+  length           = 6
+  special          = true
+  upper            = false
+  override_special = ""
 }
 
 # Create Resource Group
