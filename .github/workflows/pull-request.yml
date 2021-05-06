@@ -4,11 +4,13 @@ on:
     branches:
       - main
 jobs:
-  build-cats-game:
+  build-apps:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: cd ./cat-game
-      - run: npm install
-      - run: npm run build
+      - name: build cats-game
+        run: |
+            cd ./cat-game
+            npm install
+            npm run build
