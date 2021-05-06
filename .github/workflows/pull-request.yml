@@ -47,7 +47,7 @@ jobs:
         id: init
         run: |
             terraform init \
-              -backend-config "resource_group=${{ env.AZURE_TFSTATE_RESOURCE_GROUP }}" \
+              -backend-config "resource_group_name=${{ env.AZURE_TFSTATE_RESOURCE_GROUP }}" \
               -backend-config "storage_account_name=${{ env.AZURE_TFSTATE_STORAGE_ACCOUNT }}"
 
       - name: Terraform Validate
