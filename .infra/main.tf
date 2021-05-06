@@ -5,7 +5,7 @@ locals {
 terraform {
   backend "azurerm" {
     container_name       = "tfstate"
-    key                  = "${local.service_prefix}-state"
+    key                  = "pwdgame-state"
     # Remaining parameters from -backend-config argument
   }
   required_providers {
