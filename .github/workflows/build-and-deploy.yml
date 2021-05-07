@@ -42,37 +42,35 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
-
       - name: Terraform fmt
         id: fmt
         continue-on-error: true
         run: terraform fmt -check
-
       - name: Terraform Init
         id: init
         run: |
             terraform init \
               -backend-config "resource_group_name=${{ env.AZURE_TFSTATE_RESOURCE_GROUP }}" \
               -backend-config "storage_account_name=${{ env.AZURE_TFSTATE_STORAGE_ACCOUNT }}"
-
+      - name: Terraform Import
+        id: import
+        run: |
+          terraform import azurerm_resource_group.main_rg /subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ env.AZURE_RESOURCE_GROUP }}
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
         run: |
             terraform plan -no-color \
               -var "azure_resource_group_name=${{ env.AZURE_RESOURCE_GROUP }}"
-
       - name: Terraform Apply
         id: apply
         #if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
         run: |
             terraform apply -auto-approve -no-color \
               -var "azure_resource_group_name=${{ env.AZURE_RESOURCE_GROUP }}"
-
       - name: Terraform Output
         id: output_cat_game_app_service_name
         run: |
