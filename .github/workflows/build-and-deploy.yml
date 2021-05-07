@@ -94,7 +94,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         #if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
         with:
-          app-name: ${{ needs.terraform.ouputs.cat_game_app_service_name }}
+          app-name: ${{ needs.terraform.outputs.cat_game_app_service_name }}
           package: ./cat-game/dist
       - name: Echo app URL
         run: |
