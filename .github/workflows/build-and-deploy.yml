@@ -24,9 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./.infra
+        working-directory: ${{ env.terraform_dir }}
     outputs:
-      cat_game_app_service_name: ${{ steps.output_cat_game_app_service_name.outputs.value }}
+      cat_game_app_service_name: ${{ steps.tf_output.outputs.cat_game_app_service_name }}
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
@@ -62,10 +62,15 @@ jobs:
         run: |
             terraform apply -auto-approve -no-color \
               -var "azure_resource_group_name=${{ env.AZURE_RESOURCE_GROUP }}"
-      - name: Terraform Output
-        id: output_cat_game_app_service_name
-        run: |
-          echo "::set-output name=value::$(terraform output cat_game_app_service_name)"
+      # - name: Terraform Output
+      #   id: tf_output
+      #   run: |
+      #     echo "::set-output name=cat_game_app_service_name::$(terraform output cat_game_app_service_name)"
+      - name: Get outputs
+        uses: dflook/terraform-output@v1
+        id: tf_output
+        with:
+          path: ${{ env.terraform_dir }}
 
   deploy-apps:
     name: Deploy Apps
