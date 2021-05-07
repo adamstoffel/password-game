@@ -24,9 +24,8 @@ provider "azurerm" {
 
 resource "random_string" "service_suffix" {
   length           = 8
-  special          = true
+  special          = false
   upper            = false
-  override_special = ""
 }
 
 # Create Resource Group

@@ -19,18 +19,6 @@ env:
   AZURE_TFSTATE_STORAGE_ACCOUNT: ${{ secrets.AZURE_TFSTATE_STORAGE_ACCOUNT }}
   
 jobs:
-  build-apps:
-    name: Build Apps
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - name: Build cats-game
-        working-directory: ./cat-game
-        run: |
-            npm install
-            npm run build
-
   terraform:
     name: Terraform
     runs-on: ubuntu-latest
@@ -80,9 +68,16 @@ jobs:
 
   deploy-apps:
     name: Deploy Apps
-    needs: [build-apps, terraform]
+    needs: terraform
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - name: Build cats-game
+        working-directory: ./cat-game
+        run: |
+            npm install
+            npm run build
     - name: Azure Login
       uses: azure/login@v1
       with:
@@ -96,6 +91,7 @@ jobs:
     - name: 'Deploy cat-game'
       id: deploy_cat_game
       uses: azure/webapps-deploy@v2
+      #if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
       with:
         app-name: ${{ needs.terraform.ouputs.cat_game_app_service_name }}
         package: ./cat-game/dist
