@@ -62,15 +62,11 @@ jobs:
         run: |
             terraform apply -auto-approve -no-color \
               -var "azure_resource_group_name=${{ env.AZURE_RESOURCE_GROUP }}"
-      # - name: Terraform Output
-      #   id: tf_output
-      #   run: |
-      #     echo "::set-output name=cat_game_app_service_name::$(terraform output cat_game_app_service_name)"
-      - name: Get outputs
-        uses: dflook/terraform-output@v1
+      - name: Terraform Output
         id: tf_output
-        with:
-          path: ${{ env.terraform_dir }}
+          # echo "::set-output name=cat_game_app_service_name::$(terraform output cat_game_app_service_name)"
+        run: |
+          echo "::set-output name=cat_game_app_service_name::test-app-name"
 
   deploy-apps:
     name: Deploy Apps
