@@ -87,14 +87,15 @@ jobs:
               "clientId": "${{ env.ARM_CLIENT_ID }}",
               "clientSecret": "${{ env.ARM_CLIENT_SECRET }}",
               "subscriptionId": "${{ env.ARM_SUBSCRIPTION_ID }}",
-              "tenantId": "${{ env.ARM_TENANT_ID }}",
+              "tenantId": "${{ env.ARM_TENANT_ID }}"
             }
-      - name: 'Deploy cat-game'
+      - name: Deploy cat-game
         id: deploy_cat_game
         uses: azure/webapps-deploy@v2
         #if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
         with:
           app-name: ${{ needs.terraform.ouputs.cat_game_app_service_name }}
           package: ./cat-game/dist
-      - run: |
+      - name: Echo app URL
+        run: |
           echo "The 'cat-game' app was deployed to: ${{ steps.deploy_cat_game.outputs.webapp-url }}"
