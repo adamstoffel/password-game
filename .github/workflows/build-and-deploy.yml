@@ -55,8 +55,9 @@ jobs:
       - name: Terraform Import
         id: import
         run: |
-          terraform import azurerm_resource_group.main_rg /subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ env.AZURE_RESOURCE_GROUP }} \
-              -var "azure_resource_group_name=${{ env.AZURE_RESOURCE_GROUP }}"
+          terraform import \
+              -var "azure_resource_group_name=${{ env.AZURE_RESOURCE_GROUP }}" \
+              azurerm_resource_group.main_rg /subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ env.AZURE_RESOURCE_GROUP }}
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
