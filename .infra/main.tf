@@ -36,7 +36,7 @@ resource "azurerm_resource_group" "main_rg" {
 }
 
 resource "azurerm_app_service_plan" "main_plan" {
-  name                = "${local.service_prefix}-apps-${random_string.service_suffix}"
+  name                = "${local.service_prefix}-apps-${random_string.service_suffix.id}"
   location            = azurerm_resource_group.main_rg.location
   resource_group_name = azurerm_resource_group.main_rg.name
   kind                = "Linux"
@@ -48,7 +48,7 @@ resource "azurerm_app_service_plan" "main_plan" {
 }
 
 resource "azurerm_app_service" "cat_game" {
-  name                = "${local.service_prefix}-cat_game-${random_string.service_suffix}"
+  name                = "${local.service_prefix}-cat_game-${random_string.service_suffix.id}"
   location            = azurerm_resource_group.main_rg.location
   resource_group_name = azurerm_resource_group.main_rg.name
   app_service_plan_id = azurerm_app_service_plan.main_plan.id
