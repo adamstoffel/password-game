@@ -54,3 +54,7 @@ resource "azurerm_app_service" "cat_game" {
   app_service_plan_id = azurerm_app_service_plan.main_plan.id
   https_only          = true
 }
+
+output "cat_game_app_service_name" {
+  value = azurerm_app_service.cat_game.name
+}

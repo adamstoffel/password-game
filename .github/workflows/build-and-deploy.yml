@@ -1,5 +1,8 @@
-name: pull-request
+name: Build (and deploy)
 on: 
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -28,12 +31,14 @@ jobs:
             npm install
             npm run build
 
-  terraform-plan:
+  terraform:
     name: Terraform Plan
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./.infra
+    outputs:
+      cat_game_app_service_name: ${{ steps.output_cat_game_app_service_name.outputs.value }}
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
@@ -56,7 +61,43 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        continue-on-error: true
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
         run: |
             terraform plan -no-color \
               -var "azure_resource_group_name=${{ env.AZURE_RESOURCE_GROUP }}"
+
+      - name: Terraform Apply
+        id: apply
+        #if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
+        run: |
+            terraform apply -no-color \
+              -var "azure_resource_group_name=${{ env.AZURE_RESOURCE_GROUP }}"
+
+      - name: Terraform Output
+        id: output_cat_game_app_service_name
+        run: |
+          echo "::set-output name=value::$(terraform output cat_game_app_service_name)"
+
+  deploy-apps:
+    name: Deploy Apps
+    needs: [build-apps, terraform]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: |
+          {
+            "clientId": "${{ env.ARM_CLIENT_ID }}",
+            "clientSecret": "${{ env.ARM_CLIENT_SECRET }}",
+            "subscriptionId": "${{ env.ARM_SUBSCRIPTION_ID }}",
+            "tenantId": "${{ env.ARM_TENANT_ID }}",
+          }
+    - name: 'Deploy cat-game'
+      id: deploy_cat_game
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ needs.terraform.ouputs.cat_game_app_service_name }}
+        package: ./cat-game/dist
+    - run: |
+        echo "The 'cat-game' app was deployed to: ${{ steps.deploy_cat_game.outputs.webapp-url }}"

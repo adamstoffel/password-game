@@ -4,6 +4,8 @@ This project is intented to demonstrate some basic concepts around personal acco
 
 ## Automated deployment
 
+The solution will be automatically deployed using GitHub actions when a push or completed pull request to the `main` branch occurs.
+
 ### GitHub workflow setup
 
 To setup the GitHub Actions project deployment workflow for automated deployment to Azure, do the following:
