@@ -83,7 +83,7 @@ jobs:
       - name: Build backend-api
         working-directory: ./backend-api
         run: |
-            npm install --production
+            npm install
             npm run build
       - name: Azure Login
         uses: azure/login@v1
@@ -117,7 +117,7 @@ jobs:
       - name: Build cats-game
         working-directory: ./cat-game
         run: |
-            npm install --production
+            npm install
             npm run build
       - name: Azure Login
         uses: azure/login@v1
