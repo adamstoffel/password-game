@@ -75,7 +75,7 @@ jobs:
 
   deploy-api:
     name: Build/Deploy Backend API
-    need: terraform
+    needs: terraform
     runs-on: ubuntu-latest
     defaults:
       run:
