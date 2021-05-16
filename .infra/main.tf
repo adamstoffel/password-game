@@ -66,13 +66,13 @@ resource "azurerm_app_service" "cat_game" {
 }
 
 resource "azurerm_function_app" "backend_api" {
-  name                        = "${local.service_prefix}-backend-api-${random_string.service_suffix.id}"
-  location                    = azurerm_resource_group.main_rg.location
-  resource_group_name         = azurerm_resource_group.main_rg.name
-  app_service_plan_id         = azurerm_app_service_plan.main_plan.id
-  storagestorage_account_name = azurerm_storage_account.main_storage
-  storage_account_access_key  = azurerm_storage_account.main_storage.primary_access_key
-  os_type                     = "Linux"
+  name                       = "${local.service_prefix}-backend-api-${random_string.service_suffix.id}"
+  location                   = azurerm_resource_group.main_rg.location
+  resource_group_name        = azurerm_resource_group.main_rg.name
+  app_service_plan_id        = azurerm_app_service_plan.main_plan.id
+  storage_account_name       = azurerm_storage_account.main_storage
+  storage_account_access_key = azurerm_storage_account.main_storage.primary_access_key
+  os_type                    = "Linux"
   app_settings = {
     "WEBSITE_RUN_FROM_PACKAGE"       = "1",
     "FUNCTIONS_WORKER_RUNTIME"       = "node",
