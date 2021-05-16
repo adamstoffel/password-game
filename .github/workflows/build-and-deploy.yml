@@ -27,6 +27,8 @@ jobs:
         working-directory: ${{ env.terraform_dir }}
     outputs:
       cat_game_app_service_name: ${{ steps.tf_output.outputs.cat_game_app_service_name }}
+      backend_api_func_app_name: ${{ steps.tf_output.outputs.backend_api_func_app_name }}
+      backend_api_func_app_hostname: ${{ steps.tf_output.outputs.backend_api_func_app_hostname }}
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
@@ -69,6 +71,37 @@ jobs:
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
         run: |
           echo "::set-output name=cat_game_app_service_name::$(terraform output -raw cat_game_app_service_name)"
+          echo "::set-output name=backend_api_func_app_name::$(terraform output -raw backend_api_func_app_name)"
+          echo "::set-output name=backend_api_func_app_hostname::$(terraform output -raw backend_api_func_app_hostname)"
+
+  deploy-api:
+    name: Deploy Backend API
+    need: terraform
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - name: Build backend-api
+        working-directory: ./backend-api
+        run: |
+            npm install --production
+            npm run build
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: |
+            {
+              "clientId": "${{ env.ARM_CLIENT_ID }}",
+              "clientSecret": "${{ env.ARM_CLIENT_SECRET }}",
+              "subscriptionId": "${{ env.ARM_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ env.ARM_TENANT_ID }}"
+            }
+      -name: Deploy backend-api
+        uses: Azure/functions-action@v1
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
+        with:
+          app-name: ${{ needs.terraform.outputs.backend_api_func_app_name }}
+          package: ./backend-api
 
   deploy-apps:
     name: Deploy Apps
@@ -77,10 +110,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
+      - user: microsoft/variable-substitution@v1
+        with:
+          files: './cat-game/src/appsettings.json'
+        env:
+          backendApiBaseUrl: https://${{ needs.terraform.outputs.backend_api_func_app_hostname }}/
       - name: Build cats-game
         working-directory: ./cat-game
         run: |
-            npm install
+            npm install --production
             npm run build
       - name: Azure Login
         uses: azure/login@v1
@@ -93,7 +131,6 @@ jobs:
               "tenantId": "${{ env.ARM_TENANT_ID }}"
             }
       - name: Deploy cat-game
-        id: deploy_cat_game
         uses: azure/webapps-deploy@v2
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
         with:

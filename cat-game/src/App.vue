@@ -5,7 +5,7 @@ import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "./components/HelloWorld.vue";
 import AuthenticationComponent from "./components/AuthenticationComponent.vue";
 import UserService from "./services/UserService";
-import User from './models/User';
+import { User } from "../../backend-api/models/User";
 
 @Component({
   components: {
