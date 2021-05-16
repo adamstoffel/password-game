@@ -77,13 +77,11 @@ jobs:
     name: Build/Deploy Backend API
     needs: terraform
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend-api
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - name: Build backend-api
+        working-directory: ./backend-api
         run: |
             npm install --production
             npm run build
@@ -102,24 +100,22 @@ jobs:
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
         with:
           app-name: ${{ needs.terraform.outputs.backend_api_func_app_name }}
-          package: .
+          package: ./backend-api
 
   deploy-apps:
     name: Build/Deploy Apps
     needs: terraform
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./cat-game
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - uses: microsoft/variable-substitution@v1
         with:
-          files: './src/appsettings.json'
+          files: './cat-game/src/appsettings.json'
         env:
           backendApiBaseUrl: https://${{ needs.terraform.outputs.backend_api_func_app_hostname }}/
       - name: Build cats-game
+        working-directory: ./cat-game
         run: |
             npm install --production
             npm run build
@@ -138,4 +134,4 @@ jobs:
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
         with:
           app-name: ${{ needs.terraform.outputs.cat_game_app_service_name }}
-          package: ./dist
+          package: ./cat-game/dist
