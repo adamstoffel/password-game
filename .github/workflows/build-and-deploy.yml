@@ -8,7 +8,6 @@ on:
       - main
 
 env:
-  terraform_dir: "./.infra"
   ARM_ENVIRONMENT: public
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -24,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ${{ env.terraform_dir }}
+        working-directory: ./.infra
     outputs:
       cat_game_app_service_name: ${{ steps.tf_output.outputs.cat_game_app_service_name }}
       backend_api_func_app_name: ${{ steps.tf_output.outputs.backend_api_func_app_name }}
@@ -78,11 +77,13 @@ jobs:
     name: Build/Deploy Backend API
     need: terraform
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend-api
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - name: Build backend-api
-        working-directory: ./backend-api
         run: |
             npm install --production
             npm run build
@@ -101,22 +102,24 @@ jobs:
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
         with:
           app-name: ${{ needs.terraform.outputs.backend_api_func_app_name }}
-          package: ./backend-api
+          package: .
 
   deploy-apps:
     name: Build/Deploy Apps
     needs: terraform
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./cat-game
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - user: microsoft/variable-substitution@v1
+      - uses: microsoft/variable-substitution@v1
         with:
-          files: './cat-game/src/appsettings.json'
+          files: './src/appsettings.json'
         env:
           backendApiBaseUrl: https://${{ needs.terraform.outputs.backend_api_func_app_hostname }}/
       - name: Build cats-game
-        working-directory: ./cat-game
         run: |
             npm install --production
             npm run build
@@ -135,4 +138,4 @@ jobs:
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
         with:
           app-name: ${{ needs.terraform.outputs.cat_game_app_service_name }}
-          package: ./cat-game/dist
+          package: ./dist
