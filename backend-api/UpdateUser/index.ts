@@ -1,7 +1,7 @@
-import { AzureFunction, Context, HttpRequest } from "@azure/functions"
-import { TableClient } from "@azure/data-tables"
-import { UserWithSecurityAttrs, UserToTableEntity } from "../models/User"
-import { DefaultOperationOptions } from "../models/StorageOptions"
+import { AzureFunction, Context, HttpRequest } from "@azure/functions";
+import { TableClient } from "@azure/data-tables";
+import { UserWithSecurityAttrs, UserToTableEntity } from "../models/UserAsTableEntity";
+import { DefaultOperationOptions } from "../models/StorageOptions";
 
 const updateUser: AzureFunction = async (context: Context, req: HttpRequest) => {
     if (!isValidUser(req.body)) {
