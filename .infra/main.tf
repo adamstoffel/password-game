@@ -73,6 +73,7 @@ resource "azurerm_function_app" "backend_api" {
   storage_account_name       = azurerm_storage_account.main_storage.name
   storage_account_access_key = azurerm_storage_account.main_storage.primary_access_key
   os_type                    = "linux"
+  https_only                 = true
   app_settings = {
     "WEBSITE_RUN_FROM_PACKAGE"       = "1",
     "FUNCTIONS_WORKER_RUNTIME"       = "node",
