@@ -52,8 +52,8 @@ resource "azurerm_app_service_plan" "main_plan" {
   reserved            = true
 
   sku {
-    tier = "Free"
-    size = "F1"
+    tier = "Basic"
+    size = "B1"
   }
 }
 
@@ -80,8 +80,8 @@ resource "azurerm_function_app" "backend_api" {
     "StorageAccountConnectionString" = azurerm_storage_account.main_storage.primary_connection_string
   }
   site_config {
-    linux_fx_version          = "node|lts"
-    use_32_bit_worker_process = true
+    always_on        = true
+    linux_fx_version = "node|lts"
     cors {
       allowed_origins = [azurerm_app_service.cat_game.default_site_hostname]
     }
