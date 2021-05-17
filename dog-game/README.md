@@ -1,4 +1,4 @@
-# cat-game
+# dog-game
 
 ## Project setup
 ```

@@ -2,44 +2,23 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { User } from "../../../backend-api/models/User";
 import LoginForm from "./LoginForm.vue"
-import RegistrationForm from "./RegistrationForm.vue"
-import PasswordResetForm from "./PasswordResetForm.vue"
 
 @Component({
   components: {
-    LoginForm,
-    RegistrationForm,
-    PasswordResetForm
+    LoginForm
   },
 })
 export default class AuthenticationComponent extends Vue {
   @Prop(Function)
   readonly setUserCallback?: (user: User) => void;
-
-  loginType = 0; // 0 = login; 1 = register; 2 = password reset
-
-  goToLogin() {
-    this.loginType = 0;
-  }
-
-  goToRegister() {
-    this.loginType = 1;
-  }
-
-  goToPasswordReset() {
-    this.loginType = 2;
-  }
 }
 </script>
 
 <template>
   <div class="d-flex flex-column h-100 justify-content-center align-items-stretch">
-    <h2 class="text-center">Dog Game - trust me with your Cat password!</h2>
+    <h2 class="text-center">Dog Game!!!!</h2>
     <div class="d-flex justify-content-center align-items-center">
-      <transition name="fade" mode="out-in">
-        <LoginForm v-if="loginType === 0" key="login"
-                   :setUserCallback="setUserCallback" :registerCallback="goToRegister" :passwordResetCallback="goToPasswordReset" />
-      </transition>
+      <LoginForm :setUserCallback="setUserCallback" />
     </div>
   </div>
 </template>
