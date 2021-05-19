@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { User } from "../../../backend-api/models/User";
-import UserService from "../services/UserService";
+import { User, UserService } from "@pwdgame/shared";
+import appsettings from "../appsettings.json";
 
 @Component
 export default class RegistrationForm extends Vue {
@@ -30,7 +30,7 @@ export default class RegistrationForm extends Vue {
   errorMsg = "";
 
   async created() {
-    const questions = await new UserService().getSecurityQuestions();
+    const questions = await new UserService(appsettings.backendApiBaseUrl).getSecurityQuestions();
     const rand = new Date().valueOf() % Object.keys(questions).length; // cheat way to get random index
     this.securityPromptKey = Object.keys(questions)[rand];
     this.securityPrompt = questions[this.securityPromptKey];
@@ -49,7 +49,7 @@ export default class RegistrationForm extends Vue {
     this.submitPending = true;
 
     try {
-      const user = await new UserService().resetPassword(
+      const user = await new UserService(appsettings.backendApiBaseUrl).resetPassword(
         this.username,
         this.securityPromptKey,
         this.securityAnswer,

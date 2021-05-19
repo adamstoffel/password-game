@@ -81,6 +81,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
+      - name: Build shared
+        working-directory: ./shared
+        run: |
+            npm install
+            npm run build
       - name: Build backend-api
         working-directory: ./backend-api
         run: |
@@ -112,6 +117,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
+      - name: Build shared
+        working-directory: ./shared
+        run: |
+            npm install
+            npm run build
       - name: Replace settings in cat-game
         uses: microsoft/variable-substitution@v1
         with:

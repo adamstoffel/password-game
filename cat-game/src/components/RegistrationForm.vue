@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { User } from "../../../backend-api/models/User";
-import UserService from "../services/UserService";
+import { User, UserService } from "@pwdgame/shared";
+import appsettings from "../appsettings.json";
 
 @Component({
   components: {},
@@ -32,7 +32,7 @@ export default class PasswordResetForm extends Vue {
   errorMsg = "";
 
   async created() {
-    this.securityPrompts = await new UserService().getSecurityQuestions();
+    this.securityPrompts = await new UserService(appsettings.backendApiBaseUrl).getSecurityQuestions();
     Object.keys(this.securityAnswers).forEach(k => this.securityAnswers[k] = "")
   }
 
@@ -47,7 +47,7 @@ export default class PasswordResetForm extends Vue {
     }
 
     this.submitPending = true;
-    const userService = new UserService();
+    const userService = new UserService(appsettings.backendApiBaseUrl);
     const user: User = {
       username: this.username,
     };

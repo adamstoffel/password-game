@@ -1,0 +1,10 @@
+{
+    "bindings": [{
+        "type": "signalRConnectionInfo",
+        "name": "connectionInfo",
+        "hubName": "chat",
+        "connectionStringSetting": "SignalRConnectionString",
+        "direction": "in"
+    }],
+    "scriptFile": "../dist/ChatNegotiate/index.js"
+}

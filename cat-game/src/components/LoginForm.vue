@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { User } from "../../../backend-api/models/User";
-import UserService from "../services/UserService";
+import { User, UserService } from "@pwdgame/shared";
+import appsettings from "../appsettings.json";
 
 @Component({
   components: {},
@@ -31,7 +31,7 @@ export default class LoginForm extends Vue {
     }
     this.submitPending = true;
     this.errorMsg = "";
-    const userService = new UserService();
+    const userService = new UserService(appsettings.backendApiBaseUrl);
     try {
       const user = await userService.loginUser(
         this.username,
