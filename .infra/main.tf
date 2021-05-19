@@ -97,6 +97,7 @@ resource "azurerm_function_app" "backend_api" {
         "https://${azurerm_app_service.cat_game.default_site_hostname}",
         "https://${azurerm_app_service.dog_game.default_site_hostname}",
       ]
+      support_credentials = true
     }
   }
   version = "~3"

@@ -4,10 +4,8 @@
             "type": "httpTrigger",
             "direction": "in",
             "name": "req",
-            "methods": [
-                "get",
-                "post"
-            ]
+            "methods": ["post"],
+            "route": "chat/sendmessage"
         },
         {
             "type": "http",
@@ -16,7 +14,7 @@
         },
         {
             "type": "signalR",
-            "name": "signalRMessages",
+            "name": "$return",
             "hubName": "chat",
             "connectionStringSetting": "SignalRConnectionString",
             "direction": "out"

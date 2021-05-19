@@ -28,7 +28,7 @@ export class UserService {
 
     public async getSecurityQuestions(): Promise<{ [key: string]: string }> {
         return {
-            "favPet": "What is your pet's name?",
+            "favColor": "What is your favorite color?",
             "favFood": "What is your favorite food?",
             "birthplace": "What city were you born in?"
         };
