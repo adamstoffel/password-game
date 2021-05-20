@@ -140,7 +140,8 @@ resource "azurerm_signalr_service" "chat_service" {
 }
 
 output "app_insights_instrumentation_key" {
-  value = azurerm_application_insights.main_ai.instrumentation_key
+  value     = azurerm_application_insights.main_ai.instrumentation_key
+  sensitive = true
 }
 
 output "cat_game_app_service_name" {
