@@ -10,7 +10,7 @@ export default class ChatComponent extends Vue {
     type: Object,
     required: true
   })
-  readonly user: User;
+  readonly user: User | null = null;
 
   newMessage = "";
   sendMessagePending = false;
@@ -22,7 +22,7 @@ export default class ChatComponent extends Vue {
   }
 
   unmounted() {
-    this.chatService.dispose();
+    this.chatService?.dispose();
     this.chatService = null;
   }
 
@@ -44,7 +44,7 @@ export default class ChatComponent extends Vue {
   }
 
   getChatBubbleClasses(msg: ChatMessage) {
-    if (msg.username === this.user.username) {
+    if (msg.username === this.user!.username) {
       return ['alert-dark align-self-end msg-mine'];
     } else {
       return ['alert-primary align-self-start msg-theirs'];

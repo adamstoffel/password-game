@@ -10,7 +10,7 @@ export default class PhishedComponent extends Vue {
     type: Object,
     required: true
   })
-  readonly user: User;
+  readonly user: User | null = null;
 
   readonly spamMessages = [
     "I love dogs! Woof! - This message brought to you by 1-800-DOGS",
@@ -21,18 +21,18 @@ export default class PhishedComponent extends Vue {
     "Dogs rule! Call 1-800-DOGS today!"
   ];
 
-  intervalId: number | null = null;
+  interval: ReturnType<typeof setInterval> | null = null;
 
   mounted() {
     this.chatService = new ChatService(appSettings.backendApiBaseUrl);
     this.sendSpamMessage();
-    this.intervalId = setInterval(this.sendSpamMessage, 30000);
+    this.interval = setInterval(this.sendSpamMessage, 30000);
   }
 
   unmounted() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
     }
     if (this.chatService) {
       this.chatService?.dispose();
@@ -43,7 +43,7 @@ export default class PhishedComponent extends Vue {
   sendSpamMessage() {
     const randomMsgIdx = new Date().valueOf() % this.spamMessages.length;
     this.chatService?.sendMessage({
-      username: this.user.username,
+      username: this.user!.username,
       message: this.spamMessages[randomMsgIdx]
     });
   }
