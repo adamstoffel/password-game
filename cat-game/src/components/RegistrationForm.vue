@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-propert1y-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 import { User, UserService } from "@pwdgame/shared";
 import appSettings from "../../appsettings.json";
 
