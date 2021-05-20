@@ -12,6 +12,15 @@ You can run and debug the entire solution locally using Azure Functions tools an
 3. Install [NodeJS LTS](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=windows%2Ccsharp%2Cbash#install-the-azure-functions-core-tools).
 4. Install [Visual Studio Code]().
 
+### Get a SignalR instance
+
+To actually run the chat locally, you'll need an Azure SignalR instance. [Create an Azure SignalR](https://docs.microsoft.com/en-us/azure/azure-signalr/signalr-tutorial-authenticate-azure-functions#create-an-azure-signalr-service-instance) dev/test instance with the _Serverless_ service mode and take note of the connection string.
+
+### Create Azure Functions settings
+
+1. Copy the contents of `backend-api/example.settings.json` to `backend-api/local.settings.json`.
+2. Replace the value `YOUR_SIGNALR_CONNECTION_STRING` with your connection string from the previous section.
+
 ### Run the solution
 
 1. Start the Azure Storage Emulator by launching it from the start menu. An icon will appear in the taskbar.
