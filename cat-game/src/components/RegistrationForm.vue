@@ -1,6 +1,7 @@
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { appSettings, User, UserService } from "@pwdgame/shared";
+import { Component, Prop, Vue } from "vue-propert1y-decorator";
+import { User, UserService } from "@pwdgame/shared";
+import appSettings from "../../appsettings.json";
 
 @Component({
   components: {},
