@@ -6,7 +6,7 @@
     "license": "MIT",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc --build --clean && tsc && npm pack"
+        "build": "tsc --build --clean && tsc"
     },
     "dependencies": {
         "@azure/data-tables": "^12.0.0-beta.2",
