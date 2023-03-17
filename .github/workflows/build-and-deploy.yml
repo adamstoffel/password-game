@@ -1,11 +1,12 @@
 name: Build (and deploy)
-on: 
+on:
   push:
     branches:
       - main
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 env:
   ARM_ENVIRONMENT: public
@@ -16,7 +17,7 @@ env:
   AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
   AZURE_TFSTATE_RESOURCE_GROUP: ${{ secrets.AZURE_TFSTATE_RESOURCE_GROUP }}
   AZURE_TFSTATE_STORAGE_ACCOUNT: ${{ secrets.AZURE_TFSTATE_STORAGE_ACCOUNT }}
-  
+
 jobs:
   terraform:
     name: Terraform Plan/Apply
